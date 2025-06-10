@@ -4,11 +4,16 @@ import {
   Property,
   Collection,
   OneToMany,
+  BeforeCreate,
 } from '@mikro-orm/core';
 import { Post } from './post.entity';
 import { Comment } from './comment.entity';
+import * as bcrypt from 'bcrypt';
 
-export type SerializedUser = Omit<User, 'password' | 'toJSON'>;
+export type SerializedUser = Omit<
+  User,
+  'password' | 'toJSON' | 'hashPassword' | 'comparePassword'
+>;
 
 @Entity()
 export class User {
@@ -30,8 +35,17 @@ export class User {
   @OneToMany(() => Comment, (comment) => comment.user)
   comments = new Collection<Comment>(this);
 
+  @BeforeCreate()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+
+  async comparePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
+
   toJSON(): SerializedUser {
-    const { password, ...json } = this;
+    const { password, toJSON, hashPassword, comparePassword, ...json } = this;
     return json;
   }
 }

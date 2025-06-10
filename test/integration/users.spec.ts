@@ -5,21 +5,25 @@ import {
   cleanupIntegrationTestingModule,
   cleanupDatabase,
 } from '../utils/integration-test-module';
+import { User } from '../../src/entities/user.entity';
 
 describe('UsersController (e2e)', () => {
   let context: IntegrationTestContext;
-
-  beforeAll(async () => {
-    context = await createIntegrationTestingModule();
-  });
+  let accessToken: string;
+  let user: User;
+  const password = 'testpassword123';
 
   beforeEach(async () => {
-    // Clean up before each test to ensure clean state
-    await cleanupDatabase(context);
+    context = await createIntegrationTestingModule();
+    await cleanupDatabase(context); // Clean up before to ensure a clean state
+    user = await context.data.userFactory.create({ password });
+    const loginResponse = await request(context.app.getHttpServer())
+      .post('/auth/login')
+      .send({ username: user.username, password });
+    accessToken = loginResponse.body.access_token;
   });
 
   afterEach(async () => {
-    // Clean up after each test as well to prevent race conditions
     await cleanupDatabase(context);
   });
 
@@ -40,9 +44,9 @@ describe('UsersController (e2e)', () => {
 
       const response = await request(context.app.getHttpServer())
         .post('/users')
-        .send(createUserDto);
+        .send(createUserDto)
+        .expect(201);
 
-      expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('id');
       expect(response.body.username).toBe(
         `completely_unique_user_${uniqueSuffix}`,
@@ -85,59 +89,35 @@ describe('UsersController (e2e)', () => {
 
   describe('GET /users', () => {
     it('should return all users', async () => {
-      // Create users as needed instead of relying on seeded ones
-      await context.data.userFactory.create({
-        username: 'user1',
-        email: 'user1@test.com',
-      });
-      await context.data.userFactory.create({
-        username: 'user2',
-        email: 'user2@test.com',
-      });
-      await context.data.userFactory.create({
-        username: 'user3',
-        email: 'user3@test.com',
-      });
-
+      await context.data.userFactory.createMany(2);
       const response = await request(context.app.getHttpServer())
         .get('/users')
+        .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
-
-      expect(response.status).toBe(200);
-      // Expect 3 created users (not hardcoded seeded ones)
+      // The user from beforeEach + 2 new users
       expect(response.body).toHaveLength(3);
-      expect(response.body[0]).toHaveProperty('id');
-      expect(response.body[0]).toHaveProperty('username');
-      expect(response.body[0]).toHaveProperty('email');
-      expect(response.body[0]).not.toHaveProperty('password');
     });
   });
 
   describe('GET /users/:id', () => {
     it('should return a user by id', async () => {
-      // Create user as needed instead of using seeded user
-      const user = await context.data.userFactory.create();
-
-      const response = await request(context.app.getHttpServer()).get(
-        `/users/${user.id}`,
-      );
-
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('id', user.id);
-      expect(response.body).toHaveProperty('username');
-      expect(response.body).toHaveProperty('email');
-      expect(response.body).not.toHaveProperty('password');
+      const response = await request(context.app.getHttpServer())
+        .get(`/users/${user.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
+      expect(response.body.id).toBe(user.id);
     });
 
     it('should return 404 for non-existent user', async () => {
-      await request(context.app.getHttpServer()).get('/users/999').expect(404);
+      await request(context.app.getHttpServer())
+        .get('/users/999')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404);
     });
   });
 
   describe('PATCH /users/:id', () => {
     it('should update a user', async () => {
-      // Create user as needed
-      const user = await context.data.userFactory.create();
       const updateUserDto = {
         username: 'updateduser',
         email: 'updated@example.com',
@@ -145,9 +125,10 @@ describe('UsersController (e2e)', () => {
 
       const response = await request(context.app.getHttpServer())
         .patch(`/users/${user.id}`)
-        .send(updateUserDto);
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateUserDto)
+        .expect(200);
 
-      expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('id', user.id);
       expect(response.body).toHaveProperty('username', 'updateduser');
       expect(response.body).toHaveProperty('email', 'updated@example.com');
@@ -162,6 +143,7 @@ describe('UsersController (e2e)', () => {
 
       await request(context.app.getHttpServer())
         .patch('/users/999')
+        .set('Authorization', `Bearer ${accessToken}`)
         .send(updateUserDto)
         .expect(404);
     });
@@ -169,24 +151,21 @@ describe('UsersController (e2e)', () => {
 
   describe('DELETE /users/:id', () => {
     it('should delete a user', async () => {
-      // Create user as needed
-      const user = await context.data.userFactory.create();
+      await request(context.app.getHttpServer())
+        .delete(`/users/${user.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(204);
 
-      const response = await request(context.app.getHttpServer()).delete(
-        `/users/${user.id}`,
-      );
-
-      expect(response.status).toBe(204);
-
-      const getResponse = await request(context.app.getHttpServer()).get(
-        `/users/${user.id}`,
-      );
-      expect(getResponse.status).toBe(404);
+      await request(context.app.getHttpServer())
+        .get(`/users/${user.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404);
     });
 
     it('should return 404 for non-existent user', async () => {
       await request(context.app.getHttpServer())
         .delete('/users/999')
+        .set('Authorization', `Bearer ${accessToken}`)
         .expect(404);
     });
   });

@@ -5,12 +5,13 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { User } from '../../src/entities/user.entity';
 import { Post } from '../../src/entities/post.entity';
 import { Comment } from '../../src/entities/comment.entity';
-import { UsersService } from '../../src/services/users.service';
-import { PostsService } from '../../src/services/posts.service';
-import { CommentsService } from '../../src/services/comments.service';
-import { UsersController } from '../../src/controllers/users.controller';
-import { PostsController } from '../../src/controllers/posts.controller';
-import { CommentsController } from '../../src/controllers/comments.controller';
+import { UsersService } from '../../src/modules/users/users.service';
+import { PostsService } from '../../src/modules/posts/posts.service';
+import { CommentsService } from '../../src/modules/comments/comments.service';
+import { UsersController } from '../../src/modules/users/users.controller';
+import { PostsController } from '../../src/modules/posts/posts.controller';
+import { CommentsController } from '../../src/modules/comments/comments.controller';
+import { AuthModule } from '../../src/modules/auth/auth.module';
 import mikroOrmConfig from '../mikro-orm.config';
 import { createTestDataProvider, TestDataProvider } from './test-data-provider';
 
@@ -26,6 +27,7 @@ export async function createIntegrationTestingModule(): Promise<IntegrationTestC
     imports: [
       MikroOrmModule.forRoot(mikroOrmConfig),
       MikroOrmModule.forFeature([User, Post, Comment]),
+      AuthModule,
     ],
     controllers: [UsersController, PostsController, CommentsController],
     providers: [UsersService, PostsService, CommentsService],

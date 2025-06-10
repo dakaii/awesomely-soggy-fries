@@ -10,14 +10,17 @@ import {
   HttpException,
   HttpCode,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
-import { PostsService } from '../services/posts.service';
-import { CreatePostDto } from '../dto/create-post.dto';
-import { UpdatePostDto } from '../dto/update-post.dto';
-import { UsersService } from '../services/users.service';
-import { CommentsService } from '../services/comments.service';
+import { PostsService } from './posts.service';
+import { CreatePostDto } from '../../dto/create-post.dto';
+import { UpdatePostDto } from '../../dto/update-post.dto';
+import { UsersService } from '../users/users.service';
+import { CommentsService } from '../comments/comments.service';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 
 @Controller('posts')
+@UseGuards(JwtAuthGuard)
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,

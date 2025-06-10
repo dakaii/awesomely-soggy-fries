@@ -1,21 +1,22 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  HttpStatus,
-  HttpException,
+  Get,
   HttpCode,
+  HttpException,
+  HttpStatus,
   NotFoundException,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
-import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { User } from '../entities/user.entity';
-import { CommentsService } from '../services/comments.service';
+import { CreateUserDto } from '../../dto/create-user.dto';
+import { UpdateUserDto } from '../../dto/update-user.dto';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
+import { CommentsService } from '../comments/comments.service';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -45,6 +46,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     const users = await this.usersService.findAll();
@@ -54,6 +56,7 @@ export class UsersController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const user = await this.usersService.findOne(+id);
@@ -64,6 +67,7 @@ export class UsersController {
     return result;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id/comments')
   async getComments(@Param('id') id: string) {
     const user = await this.usersService.findOne(+id);
@@ -73,6 +77,7 @@ export class UsersController {
     return this.commentsService.findByUser(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const user = await this.usersService.update(+id, updateUserDto);
@@ -83,6 +88,7 @@ export class UsersController {
     return result;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {

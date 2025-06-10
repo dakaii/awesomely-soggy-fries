@@ -4,9 +4,10 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { User } from './entities/user.entity';
 import { Post } from './entities/post.entity';
 import { Comment } from './entities/comment.entity';
-import { UsersModule } from './modules/users.module';
-import { PostsModule } from './modules/posts.module';
-import { CommentsModule } from './modules/comments.module';
+import { UsersModule } from './modules/users/users.module';
+import { PostsModule } from './modules/posts/posts.module';
+import { CommentsModule } from './modules/comments/comments.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CommentsModule } from './modules/comments.module';
     UsersModule,
     PostsModule,
     CommentsModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
