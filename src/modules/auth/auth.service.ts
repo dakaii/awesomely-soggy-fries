@@ -1,7 +1,8 @@
+import { wrap } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -13,8 +14,7 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findByUsername(username);
     if (user && (await user.comparePassword(pass))) {
-      const { password, ...result } = user;
-      return result;
+      return wrap(user).toObject();
     }
     return null;
   }

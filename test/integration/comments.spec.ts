@@ -1,13 +1,12 @@
 import * as request from 'supertest';
+import { Post } from '../../src/entities/post.entity';
+import { User } from '../../src/entities/user.entity';
 import {
   IntegrationTestContext,
-  createIntegrationTestingModule,
-  cleanupIntegrationTestingModule,
   cleanupDatabase,
+  cleanupIntegrationTestingModule,
+  createIntegrationTestingModule,
 } from '../utils/integration-test-module';
-import { User } from '../../src/entities/user.entity';
-import { Post } from '../../src/entities/post.entity';
-import { Comment } from '../../src/entities/comment.entity';
 
 describe('CommentsController (e2e)', () => {
   let context: IntegrationTestContext;

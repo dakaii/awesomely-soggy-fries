@@ -4,7 +4,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from '../../dto/create-post.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
 import { Post } from '../../entities/post.entity';
-import { User } from '../../entities/user.entity';
 import { UsersService } from '../users/users.service';
 
 @Injectable()

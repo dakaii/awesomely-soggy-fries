@@ -1,11 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
-import { Comment } from '../../entities/comment.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCommentDto } from '../../dto/create-comment.dto';
 import { UpdateCommentDto } from '../../dto/update-comment.dto';
-import { User } from '../../entities/user.entity';
+import { Comment } from '../../entities/comment.entity';
 import { Post } from '../../entities/post.entity';
-import { InjectRepository } from '@mikro-orm/nestjs';
+import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class CommentsService {

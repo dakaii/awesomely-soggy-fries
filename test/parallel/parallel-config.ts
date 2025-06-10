@@ -17,7 +17,6 @@ export function isParallelTestMode(): boolean {
 export function getParallelTestWorkerEnv() {
   const workerId = getTestWorkerId();
   const basePort = 5432;
-  const workerDbPort = basePort + workerId - 1; // 5432, 5433, 5434, etc.
 
   return {
     TEST_DB_NAME: `chirp_test_worker_${workerId}`,

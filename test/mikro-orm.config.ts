@@ -9,6 +9,7 @@ function getTestDatabaseConfig() {
 
   if (isParallel) {
     // Import parallel config only when needed
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { getTestWorkerEnv } = require('./parallel/parallel-test-config');
     return getTestWorkerEnv();
   } else {

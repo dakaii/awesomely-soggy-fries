@@ -14,6 +14,7 @@ jest.setTimeout(30000);
 // Conditionally load parallel setup if TEST_PARALLEL is enabled
 if (process.env.TEST_PARALLEL === 'true') {
   // Import and use parallel setup for worker databases
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { setupParallelDatabase } = require('./parallel/parallel-setup');
 
   // Setup once before all tests in this worker
@@ -73,7 +74,7 @@ if (process.env.TEST_PARALLEL === 'true') {
 }
 
 // Global error handlers (apply to both parallel and sequential tests)
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason) => {
   console.error('Unhandled promise rejection:', reason);
 });
 
