@@ -5,6 +5,7 @@ import {
   Collection,
   OneToMany,
   BeforeCreate,
+  wrap,
 } from '@mikro-orm/core';
 import { Post } from './post.entity';
 import { Comment } from './comment.entity';
@@ -45,7 +46,6 @@ export class User {
   }
 
   toJSON(): SerializedUser {
-    const { password, toJSON, hashPassword, comparePassword, ...json } = this;
-    return json;
+    return wrap(this).toObject() as SerializedUser;
   }
 }
