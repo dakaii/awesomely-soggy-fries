@@ -1,4 +1,3 @@
-import { wrap } from '@mikro-orm/core';
 import {
   Body,
   Controller,
@@ -30,7 +29,7 @@ export class UsersController {
   async create(@Body() createUserDto: CreateUserDto) {
     try {
       const user = await this.usersService.create(createUserDto);
-      return wrap(user).toObject();
+      return user.toJSON();
     } catch (error) {
       if (error.code === '23505') {
         // Unique constraint violation
@@ -51,7 +50,7 @@ export class UsersController {
   async findAll() {
     const users = await this.usersService.findAll();
     return users.map((user) => {
-      return wrap(user).toObject();
+      return user.toJSON();
     });
   }
 
@@ -62,7 +61,7 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return wrap(user).toObject();
+    return user.toJSON();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -82,7 +81,7 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return wrap(user).toObject();
+    return user.toJSON();
   }
 
   @UseGuards(JwtAuthGuard)

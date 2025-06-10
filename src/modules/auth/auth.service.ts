@@ -1,4 +1,3 @@
-import { wrap } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../entities/user.entity';
@@ -14,7 +13,7 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findByUsername(username);
     if (user && (await user.comparePassword(pass))) {
-      return wrap(user).toObject();
+      return user.toJSON();
     }
     return null;
   }

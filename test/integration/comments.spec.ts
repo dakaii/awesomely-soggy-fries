@@ -7,6 +7,7 @@ import {
   cleanupIntegrationTestingModule,
   createIntegrationTestingModule,
 } from '../utils/integration-test-module';
+import { AuthService } from '../../src/modules/auth/auth.service';
 
 describe('CommentsController (e2e)', () => {
   let context: IntegrationTestContext;
@@ -14,15 +15,14 @@ describe('CommentsController (e2e)', () => {
   let user: User;
   let post: Post;
   const password = 'testpassword123';
+  let authService: AuthService;
 
   beforeEach(async () => {
     context = await createIntegrationTestingModule();
     user = await context.data.userFactory.create({ password });
     post = await context.data.postFactory.create({ user });
-    const loginResponse = await request(context.app.getHttpServer())
-      .post('/auth/login')
-      .send({ username: user.username, password });
-    accessToken = loginResponse.body.access_token;
+    authService = context.module.get(AuthService);
+    accessToken = (await authService.login(user)).access_token;
   });
 
   afterEach(async () => {

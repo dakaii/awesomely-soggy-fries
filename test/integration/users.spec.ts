@@ -6,21 +6,21 @@ import {
   cleanupDatabase,
 } from '../utils/integration-test-module';
 import { User } from '../../src/entities/user.entity';
+import { AuthService } from '../../src/modules/auth/auth.service';
 
 describe('UsersController (e2e)', () => {
   let context: IntegrationTestContext;
   let accessToken: string;
   let user: User;
   const password = 'testpassword123';
+  let authService: AuthService;
 
   beforeEach(async () => {
     context = await createIntegrationTestingModule();
     await cleanupDatabase(context);
     user = await context.data.userFactory.create({ password });
-    const loginResponse = await request(context.app.getHttpServer())
-      .post('/auth/login')
-      .send({ username: user.username, password });
-    accessToken = loginResponse.body.access_token;
+    authService = context.module.get(AuthService);
+    accessToken = (await authService.login(user)).access_token;
   });
 
   afterEach(async () => {
