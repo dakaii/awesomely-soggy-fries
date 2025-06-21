@@ -19,8 +19,8 @@ describe('CommentsController (e2e)', () => {
 
   beforeEach(async () => {
     context = await createIntegrationTestingModule();
-    user = await context.data.userFactory.create({ password });
-    post = await context.data.postFactory.create({ user });
+    user = await context.data.userFactory.createOne({ password });
+    post = await context.data.postFactory.createOne({ user });
     authService = context.module.get(AuthService);
     accessToken = (await authService.login(user)).access_token;
   });
@@ -78,7 +78,7 @@ describe('CommentsController (e2e)', () => {
 
   describe('GET /posts/:id/comments', () => {
     it('should return all comments for a post', async () => {
-      await context.data.commentFactory.createMany(2, {
+      await context.data.commentFactory.create(2, {
         user,
         post,
       });
@@ -101,7 +101,7 @@ describe('CommentsController (e2e)', () => {
 
   describe('GET /users/:id/comments', () => {
     it('should return all comments by a user', async () => {
-      await context.data.commentFactory.createMany(2, {
+      await context.data.commentFactory.create(2, {
         user,
         post,
       });
@@ -133,7 +133,7 @@ describe('CommentsController (e2e)', () => {
 
   describe('PATCH /comments/:id', () => {
     it('should update a comment', async () => {
-      const comment = await context.data.commentFactory.create({
+      const comment = await context.data.commentFactory.createOne({
         user,
         post,
       });
@@ -160,7 +160,7 @@ describe('CommentsController (e2e)', () => {
 
   describe('DELETE /comments/:id', () => {
     it('should delete a comment', async () => {
-      const comment = await context.data.commentFactory.create({
+      const comment = await context.data.commentFactory.createOne({
         user,
         post,
       });

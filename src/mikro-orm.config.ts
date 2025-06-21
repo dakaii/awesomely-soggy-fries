@@ -1,6 +1,8 @@
 import { Options } from '@mikro-orm/core';
+import { SeedManager } from '@mikro-orm/seeder';
 
 const config: Options = {
+  extensions: [SeedManager],
   entities:
     process.env.NODE_ENV === 'production'
       ? ['./dist/entities/*.entity.js']
@@ -21,6 +23,14 @@ const config: Options = {
     allOrNothing: true,
     snapshot: false,
   },
+  // seeder: {
+  //   path: './test/factories',
+  //   pathTs: './test/factories',
+  //   defaultSeeder: 'DatabaseSeeder',
+  //   glob: '!(*.d).{js,ts}',
+  //   emit: 'ts',
+  //   fileName: (className: string) => className,
+  // },
 };
 
 export default config;

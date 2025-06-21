@@ -66,7 +66,7 @@ describe('AuthController (e2e)', () => {
   describe('POST /auth/login', () => {
     it('should login a user and return an access token', async () => {
       const password = 'password123';
-      const user = await context.data.userFactory.create({ password });
+      const user = await context.data.userFactory.createOne({ password });
 
       const response = await request(context.app.getHttpServer())
         .post('/auth/login')
@@ -80,7 +80,7 @@ describe('AuthController (e2e)', () => {
   describe('GET /auth/profile', () => {
     it('should return the user profile with a valid token', async () => {
       const password = 'password123';
-      const user = await context.data.userFactory.create({ password });
+      const user = await context.data.userFactory.createOne({ password });
 
       const loginResponse = await request(context.app.getHttpServer())
         .post('/auth/login')

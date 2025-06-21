@@ -19,8 +19,8 @@ describe('PostsController (e2e)', () => {
 
   beforeEach(async () => {
     context = await createIntegrationTestingModule();
-    user = await context.data.userFactory.create({ password });
-    post = await context.data.postFactory.create({ user });
+    user = await context.data.userFactory.createOne({ password });
+    post = await context.data.postFactory.createOne({ user });
     authService = context.module.get(AuthService);
     accessToken = (await authService.login(user)).access_token;
   });
@@ -103,7 +103,7 @@ describe('PostsController (e2e)', () => {
 
   describe('GET /posts/user/:userId', () => {
     it('should return posts by user', async () => {
-      await context.data.postFactory.createMany(2, { user });
+      await context.data.postFactory.create(2, { user });
 
       const response = await request(context.app.getHttpServer())
         .get(`/posts/user/${user.id}`)

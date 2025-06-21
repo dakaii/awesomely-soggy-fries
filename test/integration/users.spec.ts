@@ -18,7 +18,7 @@ describe('UsersController (e2e)', () => {
   beforeEach(async () => {
     context = await createIntegrationTestingModule();
     await cleanupDatabase(context);
-    user = await context.data.userFactory.create({ password });
+    user = await context.data.userFactory.createOne({ password });
     authService = context.module.get(AuthService);
     accessToken = (await authService.login(user)).access_token;
   });
@@ -33,7 +33,7 @@ describe('UsersController (e2e)', () => {
 
   describe('GET /users', () => {
     it('should return all users', async () => {
-      await context.data.userFactory.createMany(2);
+      await context.data.userFactory.create(2);
       const response = await request(context.app.getHttpServer())
         .get('/users')
         .set('Authorization', `Bearer ${accessToken}`)

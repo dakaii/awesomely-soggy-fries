@@ -11,7 +11,6 @@ import { PostFactory } from '../factories/post.factory';
 import { CommentFactory } from '../factories/comment.factory';
 
 export class TestDataProvider {
-  // Expose factories directly - no wrappers needed
   readonly userFactory: UserFactory;
   readonly postFactory: PostFactory;
   readonly commentFactory: CommentFactory;
