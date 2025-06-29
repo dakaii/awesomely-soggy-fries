@@ -5,6 +5,8 @@
  * Each test worker can have its own isolated environment.
  */
 
+import { DEFAULT_PORTS } from '../../src/config';
+
 interface TestWorkerConfig {
   workerId: string;
   dbName: string;
@@ -30,7 +32,10 @@ export function getTestWorkerId(): string {
  */
 export function getTestWorkerConfig(): TestWorkerConfig {
   const workerId = getTestWorkerId();
-  const basePort = parseInt(process.env.TEST_DB_PORT || '5433', 10);
+  const basePort = parseInt(
+    process.env.TEST_DB_PORT || DEFAULT_PORTS.DB_TEST.toString(),
+    10,
+  );
   const baseAppPort = parseInt(process.env.TEST_BASE_APP_PORT || '3001', 10);
 
   // Calculate unique app ports for this worker, but use same DB port (single container)

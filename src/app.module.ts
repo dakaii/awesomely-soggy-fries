@@ -8,10 +8,11 @@ import { UsersModule } from './modules/users/users.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { AuthModule } from './modules/auth/auth.module';
+import mikroOrmConfig from './mikro-orm.config';
 
 @Module({
   imports: [
-    MikroOrmModule.forRoot(),
+    MikroOrmModule.forRoot(mikroOrmConfig),
     MikroOrmModule.forFeature([User, Post, Comment]),
     UsersModule,
     PostsModule,

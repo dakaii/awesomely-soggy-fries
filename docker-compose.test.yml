@@ -1,34 +1,35 @@
-version: '3.8'
-
 services:
   test-db:
+    image: postgres:15-alpine
     container_name: chirp-test-db
-    image: postgres:16
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: chirp_test
     ports:
-      - '5433:5432'
+      - '${DB_PORT:-5433}:5432'
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-chirp_test}
     tmpfs:
       - /var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-postgres}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   test-app:
-    container_name: chirp-test-app
     build:
       context: .
       target: development
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: npm test
+    env_file:
+      - .env.test
     environment:
-      NODE_ENV: test
-      TEST_DB_HOST: test-db
-      TEST_DB_PORT: 5432
-      TEST_DB_USER: postgres
-      TEST_DB_PASSWORD: postgres
-      TEST_DB_NAME: chirp_test
-      MIKRO_ORM_CONFIG_PATH: ./test/mikro-orm.config.ts
+      - NODE_ENV=test
+      - DB_HOST=test-db
+      - DB_PORT=5432
     depends_on:
-      - test-db
+      test-db:
+        condition: service_healthy
+    command: npm test

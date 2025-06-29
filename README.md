@@ -12,34 +12,166 @@ A Twitter-like API built with NestJS and MikroORM.
 - User management (create, read, update, delete)
 - Post management (create, read, update, delete)
 - Comment management (create, read, update, delete)
+- JWT Authentication
 - Integration tests for all features
-- Database migrations
+- Database migrations with MikroORM
+- Support for both Docker and local development
 
-## Setup
+## Quick Start
+
+### Option 1: Local Development (Recommended)
+
+Run the application locally with databases in Docker:
+
+```bash
+# Install dependencies
+npm install
+
+# Quick setup using the setup script
+./scripts/setup-env.sh local
+
+# Start the application
+make local-start
+```
+
+### Option 2: Full Docker Development
+
+Run everything in Docker:
+
+```bash
+# Install dependencies
+npm install
+
+# Setup Docker environment
+./scripts/setup-env.sh docker
+
+# Start with Docker
+make dev
+```
+
+## Detailed Setup
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Docker and Docker Compose
+- Git
+
+### Local Development Setup (App runs locally, DB in Docker)
 
 1. Install dependencies:
-
 ```bash
 npm install
 ```
 
-2. Copy `.env.example` to `.env` and update the values:
-
+2. Setup local environment:
 ```bash
-cp .env.example .env
+./scripts/setup-env.sh local
 ```
 
-3. Start the development database:
-
+3. Start the application locally:
 ```bash
-docker-compose up -d
+make local-start
+# or directly: npm run start:local
 ```
 
-4. Run database migrations:
-
+4. Run tests locally:
 ```bash
-npm run migration:up
+make local-test
+# or directly: npm run test:local
 ```
+
+### Docker Development Setup (Everything in Docker)
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Setup Docker environment:
+```bash
+./scripts/setup-env.sh docker
+```
+
+3. Start with Docker:
+```bash
+make dev
+```
+
+### Environment Configuration
+
+The application supports multiple environment configurations:
+
+- `.env.local` - Local development (app locally, DB in Docker)
+- `.env.docker` - Docker development (everything in Docker)
+- `.env.test` - Test environment configuration
+
+## Available Commands
+
+### Make Commands
+
+#### Docker Commands
+- `make dev` - Start development server with Docker
+- `make start` - Start application in Docker
+- `make stop` - Stop Docker containers
+- `make test` - Run tests in Docker
+- `make logs` - Show application logs
+- `make clean` - Clean up containers and volumes
+
+#### Local Development Commands
+- `make local-dev` - Setup local development environment
+- `make local-start` - Start application locally
+- `make local-stop` - Stop local databases
+- `make local-test` - Run tests locally
+- `make local-test-watch` - Run tests in watch mode locally
+
+#### Database Commands
+- `make db-local` - Start local development database
+- `make db-test` - Start test database
+- `make db-stop` - Stop all local databases
+- `make db-clean` - Clean all local database data
+
+#### Migration Commands
+- `make migration-up` - Run pending migrations
+- `make migration-down` - Rollback last migration
+- `make migration-refresh` - Refresh all migrations
+- `make migration-status` - Show migration status
+- `make migration-create` - Create a new migration
+- `make migration-pending` - Show pending migrations
+
+### NPM Commands
+
+#### Application
+- `npm run start:local` - Start app locally
+- `npm run start:local:debug` - Start app locally with debug
+- `npm test` - Run tests
+- `npm run test:local` - Run tests locally
+- `npm run test:local:watch` - Run tests in watch mode locally
+
+#### Migrations
+- `npm run migration:create` - Create a new migration
+- `npm run migration:up` - Run pending migrations
+- `npm run migration:down` - Rollback last migration
+- `npm run migration:refresh` - Refresh all migrations (rollback all and re-run)
+- `npm run migration:fresh` - Drop schema and re-run migrations
+- `npm run migration:status` - Show migration status
+- `npm run migration:pending` - Show pending migrations
+
+#### Schema Commands
+- `npm run schema:create` - Create database schema
+- `npm run schema:update` - Update database schema
+- `npm run schema:drop` - Drop database schema
+- `npm run schema:fresh` - Drop and recreate schema
+
+## Database Configuration
+
+### Local Development
+- **Development DB**: `localhost:5432` (chirp_db)
+- **Test DB**: `localhost:5433` (chirp_test)
+
+### Docker Development
+- **Development DB**: Internal Docker network (chirp_db)
+- **Test DB**: Internal Docker network (chirp_test)
 
 ## Database Migrations
 
@@ -48,6 +180,26 @@ Migrations are used to manage database schema changes. All migrations are stored
 ### Creating a Migration
 
 To create a new migration:
+```bash
+make migration-create
+# or: npm run migration:create
+```
+
+### Running Migrations
+
+To run pending migrations:
+```bash
+make migration-up
+# or: npm run migration:up
+```
+
+### Migration Refresh
+
+To rollback all migrations and re-run them:
+```bash
+make migration-refresh
+# or: npm run migration:refresh
+```
 
 ```bash
 npm run migration:create

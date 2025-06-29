@@ -14,6 +14,7 @@ import {
   logWorkerConfig,
 } from './parallel-test-config';
 import config from '../mikro-orm.config';
+import { DEFAULT_PORTS } from '../../src/config';
 
 async function waitForDatabase(
   env: Record<string, string>,
@@ -105,7 +106,7 @@ export default async function parallelGlobalSetup() {
     // Use actual environment variables (Docker Compose sets these correctly)
     const dbEnv = {
       TEST_DB_HOST: process.env.TEST_DB_HOST || 'localhost',
-      TEST_DB_PORT: '5432', // Always use internal Docker port
+      TEST_DB_PORT: DEFAULT_PORTS.DB_DEV.toString(), // Always use internal Docker port
       TEST_DB_USER: process.env.TEST_DB_USER || 'postgres',
       TEST_DB_PASSWORD: process.env.TEST_DB_PASSWORD || 'postgres',
     };
