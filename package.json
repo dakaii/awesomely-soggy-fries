@@ -55,6 +55,7 @@
     "@mikro-orm/cli": "^5.9.7",
     "@mikro-orm/seeder": "^5.9.8",
     "@nestjs/cli": "^10.3.2",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/schematics": "^10.1.1",
     "@nestjs/testing": "^10.3.3",
     "@types/bcrypt": "^5.0.2",

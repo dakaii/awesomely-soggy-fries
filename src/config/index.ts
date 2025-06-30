@@ -10,15 +10,21 @@ export const DEFAULT_PORTS = {
 
 // Database configuration
 export const databaseConfig = registerAs('database', () => ({
-  host: process.env.DB_HOST || (process.env.NODE_ENV === 'test' ? 'localhost' : 'localhost'),
+  host:
+    process.env.DB_HOST ||
+    (process.env.NODE_ENV === 'test' ? 'localhost' : 'localhost'),
   port: parseInt(
     process.env.DB_PORT ||
-    (process.env.NODE_ENV === 'test' ? DEFAULT_PORTS.DB_TEST.toString() : DEFAULT_PORTS.DB_DEV.toString()),
-    10
+      (process.env.NODE_ENV === 'test'
+        ? DEFAULT_PORTS.DB_TEST.toString()
+        : DEFAULT_PORTS.DB_DEV.toString()),
+    10,
   ),
   username: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
-  database: process.env.DB_NAME || (process.env.NODE_ENV === 'test' ? 'chirp_test' : 'chirp_db'),
+  database:
+    process.env.DB_NAME ||
+    (process.env.NODE_ENV === 'test' ? 'chirp_test' : 'chirp_db'),
 }));
 
 // Application configuration
@@ -33,7 +39,9 @@ export const appConfig = registerAs('app', () => ({
 
 // JWT configuration
 export const jwtConfig = registerAs('jwt', () => ({
-  secret: process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production',
+  secret:
+    process.env.JWT_SECRET ||
+    'your-super-secret-jwt-key-change-this-in-production',
   expiresIn: process.env.JWT_EXPIRES_IN || '24h',
 }));
 
@@ -45,9 +53,4 @@ export const redisConfig = registerAs('redis', () => ({
 }));
 
 // Export all configurations
-export default [
-  databaseConfig,
-  appConfig,
-  jwtConfig,
-  redisConfig,
-];
+export default [databaseConfig, appConfig, jwtConfig, redisConfig];
